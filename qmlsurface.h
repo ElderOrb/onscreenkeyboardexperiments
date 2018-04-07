@@ -16,6 +16,7 @@ public slots:
 
 private:
     QQuickItem* m_keyboard;
+    QQuickItem* m_lastFocused;
 };
 
 #endif // QMLSURFACE_H

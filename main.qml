@@ -23,7 +23,7 @@ Window {
                 id: keyboard;
 
                 property bool enabled: true
-                raised: true
+                raised: false
 
                 anchors {
                     left: parent.left

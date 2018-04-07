@@ -2,7 +2,7 @@
 
 #include <QQuickItem>
 
-QmlSurface::QmlSurface(QObject *parent) : QObject(parent), m_keyboard(nullptr)
+QmlSurface::QmlSurface(QObject *parent) : QObject(parent), m_keyboard(nullptr), m_lastFocused(nullptr)
 {
 
 }
@@ -32,7 +32,13 @@ QQuickItem* findNearestKeyboard(QQuickItem *focusItem) {
 void QmlSurface::onFocusObjectChanged(QObject *focusObject)
 {
     auto keyboard = findNearestKeyboard(qobject_cast<QQuickItem*> (focusObject));
+    qDebug() << "focusObject: " << focusObject;
+
     if(keyboard) {
+        if(keyboard != m_keyboard && m_keyboard) {
+            m_keyboard->setProperty("raised", false);
+        }
+
         m_keyboard = keyboard;
         keyboard->setProperty("raised", true);
     } else if(m_keyboard) {
