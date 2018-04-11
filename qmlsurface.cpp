@@ -1,10 +1,16 @@
 #include "qmlsurface.h"
 
 #include <QQuickItem>
+#include <QQuickWindow>
 
 QmlSurface::QmlSurface(QObject *parent) : QObject(parent), m_keyboard(nullptr), m_lastFocused(nullptr)
 {
 
+}
+
+void QmlSurface::setRoot(QQuickWindow *root)
+{
+    this->thekeyboard = root->findChild<QQuickItem*>(QString("virtualkeyboard"));
 }
 
 class Keyboard : public QQuickItem {
@@ -31,18 +37,19 @@ QQuickItem* findNearestKeyboard(QQuickItem *focusItem) {
 
 void QmlSurface::onFocusObjectChanged(QObject *focusObject)
 {
-    auto keyboard = findNearestKeyboard(qobject_cast<QQuickItem*> (focusObject));
-    qDebug() << "focusObject: " << focusObject;
+    auto quickItem = qobject_cast<QQuickItem*>(focusObject);
+    if(quickItem && quickItem->hasActiveFocus())
+    {
+        auto keyboard = findNearestKeyboard(qobject_cast<QQuickItem*> (focusObject));
+        qDebug() << "focusObject: " << focusObject;
 
-    if(keyboard) {
-        if(keyboard != m_keyboard && m_keyboard) {
-            m_keyboard->setProperty("raised", false);
+        if(keyboard) {
+            thekeyboard->setParentItem(keyboard);
+            thekeyboard->setProperty("raised", true);
+
+            return;
         }
-
-        m_keyboard = keyboard;
-        keyboard->setProperty("raised", true);
-    } else if(m_keyboard) {
-        m_keyboard->setProperty("raised", false);
-        m_keyboard = nullptr;
     }
+
+    thekeyboard->setProperty("raised", false);
 }

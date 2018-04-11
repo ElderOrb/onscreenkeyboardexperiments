@@ -2,6 +2,8 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlComponent>
+#include <QQmlContext>
 #include <QQuickWindow>
 
 int main(int argc, char *argv[])
@@ -16,7 +18,9 @@ int main(int argc, char *argv[])
         return -1;
 
     auto window = qobject_cast<QQuickWindow*> (engine.rootObjects().first());
+
     QmlSurface surface;
+    surface.setRoot(window);
 
     QObject::connect(window, &QQuickWindow::focusObjectChanged, &surface, &QmlSurface::onFocusObjectChanged);
 
